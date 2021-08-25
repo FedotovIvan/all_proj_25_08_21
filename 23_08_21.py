@@ -105,6 +105,7 @@ class Ui_MainWindow(object):
         self.comboBox_open_close.addItem("")
         self.comboBox_open_close.addItem("")
         self.comboBox_open_close.addItem("")
+        self.comboBox_open_close.addItem("")
         self.time_new = QtWidgets.QTextEdit(self.groupBox_3)
         self.time_new.setGeometry(QtCore.QRect(150, 130, 91, 31))
         self.time_new.setObjectName("time_new")
@@ -131,7 +132,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-
+        self.start = 0
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.timer_func)
@@ -176,23 +177,64 @@ class Ui_MainWindow(object):
         self.tableWidget_2.setItem(7, 0, QtWidgets.QTableWidgetItem(str(x[3][6])))
         self.tableWidget_2.setItem(8, 0, QtWidgets.QTableWidgetItem(str(x[3][7])))
 
-        
 
+        self.tableWidget.setItem(0, 3, QtWidgets.QTableWidgetItem(str(x[5][0])))
+        self.tableWidget.setItem(1, 3, QtWidgets.QTableWidgetItem(str(x[5][1])))
+        self.tableWidget.setItem(2, 3, QtWidgets.QTableWidgetItem(str(x[5][2])))
+        self.tableWidget.setItem(3, 3, QtWidgets.QTableWidgetItem(str(x[5][3])))
+        self.tableWidget.setItem(4, 3, QtWidgets.QTableWidgetItem(str(x[5][4])))
 
+        if x[5][0] == 0:
+            self.tableWidget.item(0,3).setBackground(QtGui.QColor(100,100,74))
+        else:
+            self.tableWidget.item(0, 3).setBackground(QtGui.QColor(100, 100, 74))
+
+        for i in range(0,4):
+            if x[4][i]["mode"] == "time":
+                if x[4][i]["dir"] == 1:
+                    self.tableWidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str("T(up)%d"% x[4][i]["time"])))
+                if x[4][i]["dir"] == 3:
+                    self.tableWidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str("T(down)%d"% x[4][i]["time"])))
+                if x[4][i]["dir"] == 2:
+                    self.tableWidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str("open_full")))
+                if x[4][i]["dir"] == 4:
+                    self.tableWidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str("close_full")))
+            if x[4][i]["mode"] == "q":
+                self.tableWidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str("Q(set)%.2f" % x[4][i]["q"])))
         print(x)
 
 
     def connect_func(self):
-        self.device = driver_hard()
-        self.tr = Thread(target=self.device.loop_hard)
-        self.tr.start()
-        self.timer.start(500)
+        if self.start == 0:
+            self.start = 1
+
+            self.device = driver_hard()
+            self.tr = Thread(target=self.device.loop_hard)
+            self.tr.start()
+            self.timer.start(500)
 
 
     def set_new_q_func(self):
-        pass
+        new_taskQ = {}
+        numq = 0
+        numq = int(self.device_num.currentText())
+        text = self.new_q.toPlainText()
+        self.device.set_new_task("q",500,float(text),0,numq)
+
     def set_new_q_t_func(self):
-        pass
+        numq = 0
+        numq = int(self.device_num.currentText())
+        time = int(self.time_new.toPlainText())
+        dir = self.comboBox_open_close.currentIndex()
+        if dir == 0:
+            self.device.set_new_task("time",time,0,1,numq)
+        if dir == 1:
+            self.device.set_new_task("time", time, 0, 3, numq)
+        if dir == 2:
+            self.device.set_new_task("time",time,0,4,numq)
+        if dir == 3:
+            self.device.set_new_task("time",time,0,3,numq)
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -250,6 +292,7 @@ class Ui_MainWindow(object):
         self.comboBox_open_close.setItemText(0, _translate("MainWindow", "открыть"))
         self.comboBox_open_close.setItemText(1, _translate("MainWindow", "закрыть"))
         self.comboBox_open_close.setItemText(2, _translate("MainWindow", "закрыть полностью"))
+        self.comboBox_open_close.setItemText(3, _translate("MainWindow", "открыть полностью"))
         self.label_2.setText(_translate("MainWindow", "время мс"))
 
 if __name__ == "__main__":

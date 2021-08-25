@@ -6,21 +6,22 @@ from threading import Thread
 
 class driver_hard:
     def __init__(self):
-        self.task_q = [{"mode": "none", "time": 1000, "dir": 1, "q": 0.54},
+        self.task_q = [{"mode": "q", "time": 1000, "dir": 1, "q": 0.54},
                        {"mode": "none", "time": 1000, "dir": 1, "q": 0.54},
                        {"mode": "none", "time": 1000, "dir": 1, "q": 0.54},
                        {"mode": "none", "time": 1000, "dir": 1, "q": 0.54},
                        {"mode": "none", "time": 1000, "dir": 1, "q": 0.54}
                        ]
 
-        self.current_q = [0,0,0,0,0]
-        self.current_T_q = [0,0,0,0,0]
-        self.current_T_mx = [0,0,0,0,0,0,0,0]
-        self.current_P = [0,0,0,0,0,0,0,0]
-        self.error = [0.1,0.1,0.1,0.1,0.1]
-        self.ready_task = [0,0,0,0,0]
-        self.ready_owen = [0,0,0,0,0]
-        self.ready_pid = [0, 0, 0, 0, 0]
+        self.current_q   = [0, 0, 0, 0, 0]
+        self.current_T_q = [0, 0, 0, 0, 0]
+        self.current_T_mx = [0, 0, 0, 0, 0, 0, 0, 0]
+        self.current_P   = [0, 0, 0, 0, 0, 0, 0, 0]
+        self.error       = [0.1, 0.1, 0.1, 0.1, 0.1]
+        self.ready_task  = [0, 0, 0, 0, 0]
+        self.ready_owen  = [0, 0, 0, 0, 0]
+        self.ready_pid   = [0, 0, 0, 0, 0]
+        self.task_is_new = [0, 0, 0, 0, 0]
 
         self.mx_T = mx110_read_data(debug=True)
         self.mx_P = mx110_read_data(debug=True)
@@ -64,6 +65,8 @@ class driver_hard:
                     self.ow.open_all_q(i)
                 if self.task_q[i-1]["dir"] == 3:
                     self.ow.close_q(i, self.task_q[0]["time"])
+                if self.task_q[i-1]["dir"] == 4:
+                    self.ow.close_all_q(i)
                 self.ready_task[i - 1] = 0
             if self.task_q[i-1]["mode"] == "q":
                 self._my_pid(self.task_q[i-1]["q"],1)
@@ -83,6 +86,7 @@ class driver_hard:
 
     def _my_pid(self, num_q, task):
         #self.ready_owen = self.ow.read_ready()
+        '''
         if self.ready_owen[num_q-1] == 1:
             self.ready_pid[num_q - 1] = 0
             if self.current_q[num_q-1] > task + self.error[num_q-1]:
@@ -91,11 +95,22 @@ class driver_hard:
                 self.ow.open_q(num_q, 500)
             else:
                 self.ready_pid[num_q - 1] = 1
+                '''
 
     def get_all_data_to_ui(self):
-        return [self.current_q, self.current_T_q, self.current_P, self.current_T_mx, self.task_q, self.ready_task]
+        return [self.current_q, self.current_T_q,
+                self.current_P, self.current_T_mx,
+                self.task_q, self.ready_task]
 
     def set_new_task(self, mode ='none' , time = 500, q = 0, dir = 0, num_q = 0):
+        if self.task_q[num_q - 1]["mode"] == mode:
+            if self.task_q[num_q - 1]["q"] == q:
+                if self.task_q[num_q - 1]["dir"] == dir:
+                    if self.task_q[num_q - 1]["time"] == time:
+                        self.task_is_new[num_q-1] = 0
+                        return
+        self.task_is_new[num_q-1] = 1
+
         if mode == 'time':
             self.task_q[num_q-1] = {"mode": "time", "time": time, "dir": dir, "q": q}
         if mode == 'q':
