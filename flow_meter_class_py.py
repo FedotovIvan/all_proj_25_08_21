@@ -117,8 +117,6 @@ class flow_meter_class:
         self.register_temp = register_temp
 
         self.debug = debug
-        self.counter_one = 0
-        self.counter_zero = 0
         self.default_valume = default_valume
 
         if self.debug == False:
@@ -132,33 +130,28 @@ class flow_meter_class:
         else:
             print("debug init")
 
-
         self.flow = 0
         self.temp = 0
 
+    def read_register(self, addr):
+        check = 0
+        x = 0
+        while check == 0:
+            check = 1
+            try:
+                x = self.instr.read_float(addr, 4, 2)
+            except:
+                check = 0
+        return x
+
+
     def read_temp_and_flow(self):
         if self.debug == False:
-            try:
-                self.flow = self.instr.read_float(self.register_flow, 4, 2)
-            except:
-                self.flow = -1
-
-            try:
-                self.temp = self.instr.read_float(self.register_temp, 4, 2)
-            except:
-                self.temp = -1
+            self.flow = self.read_register(self.register_flow)
+            self.temp = self.read_register(self.register_temp)
         else:
-            if self.counter_one < 30:
-                self.flow = self.default_valume + randint((-1) * self.default_valume, self.default_valume)/10
-                self.counter_one += 1
-            else:
-                if self.counter_zero < 4:
-                    self.flow = 0
-                    self.counter_zero += 1
-                else:
-                    self.counter_zero = 0
-                    self.counter_one = 0
-
+            self.flow = self.default_valume + randint((-1) * self.default_valume, self.default_valume)/10
+            self.temp = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
 
         return [self.flow, self.temp]
 
@@ -176,23 +169,8 @@ class mx110_read_data:
         self.debug = debug
         self.default_valume = default_valume
 
-        self.data_1 = 0
-        self.data_2 = 0
-        self.data_3 = 0
-        self.data_4 = 0
-        self.data_5 = 0
-        self.data_6 = 0
-        self.data_7 = 0
-        self.data_8 = 0
-
-        self.register_1 = 4
-        self.register_2 = 10
-        self.register_3 = 16
-        self.register_4 = 22
-        self.register_5 = 28
-        self.register_6 = 34
-        self.register_7 = 40
-        self.register_8 = 46
+        self.data = [0,0,0,0,0,0,0,0]
+        self.register = [4,10,16,22,28,34,40,46]
 
         if self.debug == False:
             self.instr = minimalmodbus.Instrument(self.port,self.slave_id_modbus,minimalmodbus.MODE_RTU)
@@ -205,52 +183,26 @@ class mx110_read_data:
         else:
             print("debug init")
 
+    def read_register(self, addr):
+        check = 0
+        x = 0
+        while check == 0:
+            check = 1
+            try:
+                x = self.instr.read_float(addr, 4, 2)
+            except:
+                check = 0
+        return x
+
     def read_data(self):#new function
         if self.debug == False:
-            try:
-                self.data_1 = self.instr.read_float(self.register_1, 3, 2)
-            except:
-                self.data_1 = -1
-            try:
-                self.data_2 = self.instr.read_float(self.register_2, 3, 2)
-            except:
-                self.data_2 = -1
-            try:
-                self.data_3 = self.instr.read_float(self.register_3, 3, 2)
-            except:
-                self.data_3 = -1
-            try:
-                self.data_4 = self.instr.read_float(self.register_4, 3, 2)
-            except:
-                self.data_4 = -1
-            try:
-                self.data_5 = self.instr.read_float(self.register_5, 3, 2)
-            except:
-                self.data_5 = -1
-            try:
-                self.data_6 = self.instr.read_float(self.register_6, 3, 2)
-            except:
-                self.data_6 = -1
-            try:
-                self.data_7 = self.instr.read_float(self.register_7, 3, 2)
-            except:
-                self.data_7 = -1
-            try:
-                self.data_8 = self.instr.read_float(self.register_8, 3, 2)
-            except:
-                self.data_8 = -1
-
+            for i in range(0, 7):
+                self.data[i] = self.read_register(self.register[i])
         else:
-            self.data_1 = self.default_valume + randint((-1) * self.default_valume, self.default_valume)/10
-            self.data_2 = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
-            self.data_3 = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
-            self.data_4 = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
-            self.data_5 = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
-            self.data_6 = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
-            self.data_7 = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
-            self.data_8 = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
+            for i in range(0, 7):
+                self.data[i] = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
 
-        return [self.data_1, self.data_2, self.data_3, self.data_4, self.data_5, self.data_6, self.data_7, self.data_8]
+        return self.data
 
 
 

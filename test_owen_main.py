@@ -58,16 +58,18 @@ class driver_hard:
 
     def _rule_device(self):
         for i in range(1,5):
-            if self.task_q[i-1]["mode"] == "time":
-                if self.task_q[i-1]["dir"] == 1:
-                    self.ow.open_q(i, self.task_q[i-1]["time"])
-                if self.task_q[i-1]["dir"] == 2:
-                    self.ow.open_all_q(i)
-                if self.task_q[i-1]["dir"] == 3:
-                    self.ow.close_q(i, self.task_q[0]["time"])
-                if self.task_q[i-1]["dir"] == 4:
-                    self.ow.close_all_q(i)
-                self.ready_task[i - 1] = 0
+            if self.task_is_new[i-1] == 1:
+                if self.task_q[i-1]["mode"] == "time":
+                    if self.task_q[i-1]["dir"] == 1:
+                        self.ow.open_q(i, self.task_q[i-1]["time"])
+                    if self.task_q[i-1]["dir"] == 2:
+                        self.ow.open_all_q(i)
+                    if self.task_q[i-1]["dir"] == 3:
+                        self.ow.close_q(i, self.task_q[0]["time"])
+                    if self.task_q[i-1]["dir"] == 4:
+                        self.ow.close_all_q(i)
+                    self.task_is_new[i - 1] = 0
+                    self.ready_task[i - 1] = 0
             if self.task_q[i-1]["mode"] == "q":
                 self._my_pid(self.task_q[i-1]["q"],1)
                 self.ready_task[i-1] = 0
