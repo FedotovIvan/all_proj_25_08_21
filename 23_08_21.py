@@ -147,49 +147,16 @@ class Ui_MainWindow(object):
 
     def timer_func(self):
         x = self.device.get_all_data_to_ui()
-        self.tableWidget.setItem(0, 1, QtWidgets.QTableWidgetItem(str(x[0][0])))
-        self.tableWidget.setItem(1, 1, QtWidgets.QTableWidgetItem(str(x[0][1])))
-        self.tableWidget.setItem(2, 1, QtWidgets.QTableWidgetItem(str(x[0][2])))
-        self.tableWidget.setItem(3, 1, QtWidgets.QTableWidgetItem(str(x[0][3])))
-        self.tableWidget.setItem(4, 1, QtWidgets.QTableWidgetItem(str(x[0][4])))
 
-        self.tableWidget.setItem(0, 2, QtWidgets.QTableWidgetItem(str(x[1][0])))
-        self.tableWidget.setItem(1, 2, QtWidgets.QTableWidgetItem(str(x[1][1])))
-        self.tableWidget.setItem(2, 2, QtWidgets.QTableWidgetItem(str(x[1][2])))
-        self.tableWidget.setItem(3, 2, QtWidgets.QTableWidgetItem(str(x[1][3])))
-        self.tableWidget.setItem(4, 2, QtWidgets.QTableWidgetItem(str(x[1][4])))
+        for i in range(0,8):
+            self.tableWidget_2.setItem(i+1, 1, QtWidgets.QTableWidgetItem(str(x[2][i])))
+            self.tableWidget_2.setItem(i+1, 0, QtWidgets.QTableWidgetItem(str(x[3][i])))
 
-        self.tableWidget_2.setItem(1, 1, QtWidgets.QTableWidgetItem(str(x[2][0])))
-        self.tableWidget_2.setItem(2, 1, QtWidgets.QTableWidgetItem(str(x[2][1])))
-        self.tableWidget_2.setItem(3, 1, QtWidgets.QTableWidgetItem(str(x[2][2])))
-        self.tableWidget_2.setItem(4, 1, QtWidgets.QTableWidgetItem(str(x[2][3])))
-        self.tableWidget_2.setItem(5, 1, QtWidgets.QTableWidgetItem(str(x[2][4])))
-        self.tableWidget_2.setItem(6, 1, QtWidgets.QTableWidgetItem(str(x[2][5])))
-        self.tableWidget_2.setItem(7, 1, QtWidgets.QTableWidgetItem(str(x[2][6])))
-        self.tableWidget_2.setItem(8, 1, QtWidgets.QTableWidgetItem(str(x[2][7])))
+        for i in range(0,5):
+            self.tableWidget.setItem(i, 1, QtWidgets.QTableWidgetItem(str(x[0][i])))
+            self.tableWidget.setItem(i, 2, QtWidgets.QTableWidgetItem(str(x[1][i])))
+            self.tableWidget.setItem(i, 3, QtWidgets.QTableWidgetItem(str(x[5][i])))
 
-        self.tableWidget_2.setItem(1, 0, QtWidgets.QTableWidgetItem(str(x[3][0])))
-        self.tableWidget_2.setItem(2, 0, QtWidgets.QTableWidgetItem(str(x[3][1])))
-        self.tableWidget_2.setItem(3, 0, QtWidgets.QTableWidgetItem(str(x[3][2])))
-        self.tableWidget_2.setItem(4, 0, QtWidgets.QTableWidgetItem(str(x[3][3])))
-        self.tableWidget_2.setItem(5, 0, QtWidgets.QTableWidgetItem(str(x[3][4])))
-        self.tableWidget_2.setItem(6, 0, QtWidgets.QTableWidgetItem(str(x[3][5])))
-        self.tableWidget_2.setItem(7, 0, QtWidgets.QTableWidgetItem(str(x[3][6])))
-        self.tableWidget_2.setItem(8, 0, QtWidgets.QTableWidgetItem(str(x[3][7])))
-
-
-        self.tableWidget.setItem(0, 3, QtWidgets.QTableWidgetItem(str(x[5][0])))
-        self.tableWidget.setItem(1, 3, QtWidgets.QTableWidgetItem(str(x[5][1])))
-        self.tableWidget.setItem(2, 3, QtWidgets.QTableWidgetItem(str(x[5][2])))
-        self.tableWidget.setItem(3, 3, QtWidgets.QTableWidgetItem(str(x[5][3])))
-        self.tableWidget.setItem(4, 3, QtWidgets.QTableWidgetItem(str(x[5][4])))
-
-        if x[5][0] == 0:
-            self.tableWidget.item(0,3).setBackground(QtGui.QColor(100,100,74))
-        else:
-            self.tableWidget.item(0, 3).setBackground(QtGui.QColor(100, 100, 74))
-
-        for i in range(0,4):
             if x[4][i]["mode"] == "time":
                 if x[4][i]["dir"] == 1:
                     self.tableWidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str("T(up)%d"% x[4][i]["time"])))
@@ -201,6 +168,26 @@ class Ui_MainWindow(object):
                     self.tableWidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str("close_full")))
             if x[4][i]["mode"] == "q":
                 self.tableWidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str("Q(set)%.2f" % x[4][i]["q"])))
+        if x[5][0] == 0:
+            self.tableWidget.item(0,3).setBackground(QtGui.QColor(255,0,0))
+        else:
+            self.tableWidget.item(0, 3).setBackground(QtGui.QColor(0, 255, 0))
+        if x[5][1] == 0:
+            self.tableWidget.item(1, 3).setBackground(QtGui.QColor(255, 0, 0))
+        else:
+            self.tableWidget.item(1, 3).setBackground(QtGui.QColor(0, 255, 0))
+        if x[5][2] == 0:
+            self.tableWidget.item(2,3).setBackground(QtGui.QColor(255,0,0))
+        else:
+            self.tableWidget.item(2, 3).setBackground(QtGui.QColor(0, 255, 0))
+        if x[5][3] == 0:
+            self.tableWidget.item(3,3).setBackground(QtGui.QColor(255,0,0))
+        else:
+            self.tableWidget.item(3, 3).setBackground(QtGui.QColor(0, 255, 0))
+        if x[5][4] == 0:
+            self.tableWidget.item(4,3).setBackground(QtGui.QColor(255,0,0))
+        else:
+            self.tableWidget.item(4, 3).setBackground(QtGui.QColor(0, 255, 0))
         print(x)
 
 
@@ -215,25 +202,22 @@ class Ui_MainWindow(object):
 
 
     def set_new_q_func(self):
-        new_taskQ = {}
-        numq = 0
         numq = int(self.device_num.currentText())
         text = self.new_q.toPlainText()
-        self.device.set_new_task("q",500,float(text),0,numq)
+        self.device.set_new_task("q", 500, float(text), 0, numq)
 
     def set_new_q_t_func(self):
-        numq = 0
         numq = int(self.device_num.currentText())
         time = int(self.time_new.toPlainText())
         dir = self.comboBox_open_close.currentIndex()
         if dir == 0:
-            self.device.set_new_task("time",time,0,1,numq)
+            self.device.set_new_task("time", time, 0, 1, numq)
         if dir == 1:
             self.device.set_new_task("time", time, 0, 3, numq)
         if dir == 2:
-            self.device.set_new_task("time",time,0,4,numq)
+            self.device.set_new_task("time", time, 0, 4, numq)
         if dir == 3:
-            self.device.set_new_task("time",time,0,3,numq)
+            self.device.set_new_task("time", time, 0, 3, numq)
 
 
     def retranslateUi(self, MainWindow):
