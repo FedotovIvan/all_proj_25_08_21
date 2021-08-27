@@ -23,10 +23,10 @@ class owen:
 
         self.time = 3000
 
-        self.register_time = 2
-        self.register_start_q =[0]
-        self.register_dir_q = [1]
-        self.register_ready_q = [3]
+        self.register_time = [2,10,11]
+        self.register_start_q =[0,4,5]
+        self.register_dir_q = [1,6,7]
+        self.register_ready_q = [3,8,9]
 
         if self.debug == False:
             self.instr = minimalmodbus.Instrument(self.port, self.slave_id_modbus, minimalmodbus.MODE_RTU)
@@ -60,7 +60,7 @@ class owen:
 
     def open_q(self, num_q, time):
         if self.debug == False:
-            self.write_register(self.register_time, time)
+            self.write_register(self.register_time[num_q-1], time)
             self.write_register(self.register_dir_q[num_q-1],1)
             self.write_register(self.register_start_q[num_q-1],1)
             self.ready_q[num_q-1] = 0
@@ -69,7 +69,7 @@ class owen:
 
     def close_q(self, num_q, time):
         if self.debug == False:
-            self.write_register(self.register_time, time)
+            self.write_register(self.register_time[num_q-1], time)
             self.write_register(self.register_dir_q[num_q - 1], 3)
             self.write_register(self.register_start_q[num_q - 1], 1)
             self.ready_q[num_q - 1] = 0
@@ -97,8 +97,8 @@ class owen:
             self.ready_q[0] = self.read_register(self.register_ready_q[0])
             self.ready_q[1] = self.read_register(self.register_ready_q[1])
             self.ready_q[2] = self.read_register(self.register_ready_q[2])
-            self.ready_q[3] = self.read_register(self.register_ready_q[3])
-            self.ready_q[4] = self.read_register(self.register_ready_q[4])
+            #self.ready_q[3] = self.read_register(self.register_ready_q[3])
+            #self.ready_q[4] = self.read_register(self.register_ready_q[4])
             return self.ready_q
         else:
             return[1,1,1,1,1]
@@ -412,7 +412,7 @@ if __name__ == '__main__':
     plt.plot(list1)
     plt.plot(list2)
     plt.show()
-    '''
+    
     q1 = flow_meter_class("COM5",1,9600,1,8,1,167,171)
     T1 = mx110_read_data("COM5", 16, 9600, 1, 8, 1, default_valume=4)
     while 1 == 1:
@@ -422,15 +422,7 @@ if __name__ == '__main__':
         print(data)
         time.sleep(1)
 '''
-from ui_20_08_2021 import Ui_MainWindow
-from PyQt5 import QtCore, QtGui, QtWidgets
-
-if __name__ == "__main__":
-    import sys
-    app =QtWidgets.QApplication(sys.argv)
-    main_wind = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(main_wind)
-    main_wind.show()
-    sys.exit(app.exec_())
-    '''
+    ow = owen("COM11", 1)
+    ow.open_q(1, 2000)
+    time.sleep(5)
+    ow.close_q(3, 2000)

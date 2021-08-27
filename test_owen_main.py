@@ -25,7 +25,7 @@ class driver_hard:
 
         self.mx_T = mx110_read_data(debug=True)
         self.mx_P = mx110_read_data(debug=True)
-        self.ow = owen(debug=True)
+        self.ow = owen("COM11",1)
         self.q1 = flow_meter_class(debug=True)
         self.q2 = flow_meter_class(debug=True)
         self.q3 = flow_meter_class(debug=True)
@@ -57,7 +57,7 @@ class driver_hard:
             time.sleep(1)
 
     def _rule_device(self):
-        for i in range(1,5):
+        for i in range(1,3):
             if self.task_is_new[i-1] == 1:
                 if self.task_q[i-1]["mode"] == "time":
                     if self.task_q[i-1]["dir"] == 1:
@@ -71,7 +71,7 @@ class driver_hard:
                     self.task_is_new[i - 1] = 0
                     self.ready_task[i - 1] = 0
             if self.task_q[i-1]["mode"] == "q":
-                self._my_pid(self.task_q[i-1]["q"],1)
+                self._my_pid(i,self.task_q[i-1]["q"])
                 self.ready_task[i-1] = 0
 
     def _is_ready_task(self):
@@ -87,8 +87,8 @@ class driver_hard:
 
 
     def _my_pid(self, num_q, task):
-        #self.ready_owen = self.ow.read_ready()
-        '''
+        self.ready_owen = self.ow.read_ready()
+
         if self.ready_owen[num_q-1] == 1:
             self.ready_pid[num_q - 1] = 0
             if self.current_q[num_q-1] > task + self.error[num_q-1]:
@@ -97,7 +97,7 @@ class driver_hard:
                 self.ow.open_q(num_q, 500)
             else:
                 self.ready_pid[num_q - 1] = 1
-                '''
+
 
     def get_all_data_to_ui(self):
         return [self.current_q, self.current_T_q,
