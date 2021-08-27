@@ -217,7 +217,7 @@ class Ui_MainWindow(object):
         if dir == 2:
             self.device.set_new_task("time", time, 0, 4, numq)
         if dir == 3:
-            self.device.set_new_task("time", time, 0, 3, numq)
+            self.device.set_new_task("time", time, 0, 2, numq)
 
 
     def retranslateUi(self, MainWindow):

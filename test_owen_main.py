@@ -17,7 +17,7 @@ class driver_hard:
         self.current_T_q = [0, 0, 0, 0, 0]
         self.current_T_mx = [0, 0, 0, 0, 0, 0, 0, 0]
         self.current_P   = [0, 0, 0, 0, 0, 0, 0, 0]
-        self.error       = [0.1, 0.1, 0.1, 0.1, 0.1]
+        self.error       = [0.3, 0.3, 0.3, 0.3, 0.3]
         self.ready_task  = [0, 0, 0, 0, 0]
         self.ready_owen  = [0, 0, 0, 0, 0]
         self.ready_pid   = [0, 0, 0, 0, 0]
@@ -57,7 +57,7 @@ class driver_hard:
             time.sleep(1)
 
     def _rule_device(self):
-        for i in range(1,3):
+        for i in range(1,4):
             if self.task_is_new[i-1] == 1:
                 if self.task_q[i-1]["mode"] == "time":
                     if self.task_q[i-1]["dir"] == 1:
