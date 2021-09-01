@@ -6,7 +6,7 @@ from threading import Thread
 
 class driver_hard:
     def __init__(self):
-        self.task_q = [{"mode": "q", "time": 1000, "dir": 1, "q": 0.54},
+        self.task_q = [{"mode": "none", "time": 1000, "dir": 1, "q": 0.54},
                        {"mode": "none", "time": 1000, "dir": 1, "q": 0.54},
                        {"mode": "none", "time": 1000, "dir": 1, "q": 0.54},
                        {"mode": "none", "time": 1000, "dir": 1, "q": 0.54},
@@ -17,19 +17,19 @@ class driver_hard:
         self.current_T_q = [0, 0, 0, 0, 0]
         self.current_T_mx = [0, 0, 0, 0, 0, 0, 0, 0]
         self.current_P   = [0, 0, 0, 0, 0, 0, 0, 0]
-        self.error       = [0.3, 0.3, 0.3, 0.3, 0.3]
+        self.error       = [0.02, 0.02, 0.01, 0.3, 0.3]
         self.ready_task  = [0, 0, 0, 0, 0]
         self.ready_owen  = [0, 0, 0, 0, 0]
         self.ready_pid   = [0, 0, 0, 0, 0]
         self.task_is_new = [0, 0, 0, 0, 0]
 
         self.mx_T = mx110_read_data(debug=True)
-        self.mx_P = mx110_read_data(debug=True)
-        self.ow = owen("COM11",1)
-        self.q1 = flow_meter_class(debug=True)
-        self.q2 = flow_meter_class(debug=True)
-        self.q3 = flow_meter_class(debug=True)
-        self.q4 = flow_meter_class(debug=True)
+        self.mx_P = mx110_read_data("COM7",16)
+        self.ow = owen("COM7",1)
+        self.q1 = flow_meter_class("COM7",2,register_flow=167,register_temp=171)
+        self.q2 = flow_meter_class("COM7",3,register_flow=167,register_temp=171)
+        self.q3 = flow_meter_class("COM7",4,register_flow=167,register_temp=171)
+        self.q4 = flow_meter_class("COM7",5,register_flow=167,register_temp=171,is_no_air= True)
         self.q5 = flow_meter_class(debug=True)
 
 
@@ -121,7 +121,7 @@ class driver_hard:
 if __name__ == '__main__':
     '''
     ow = owen("COM11",1)
-    ow.open_q(1, 2000)
+    ow.open_q(1, 2000  )
     #time.sleep(5)
     ow.close_q(1,2000)
     '''
