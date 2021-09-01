@@ -149,13 +149,13 @@ class Ui_MainWindow(object):
         x = self.device.get_all_data_to_ui()
 
         for i in range(0,8):
-            self.tableWidget_2.setItem(i+1, 1, QtWidgets.QTableWidgetItem(str(x[2][i])))
-            self.tableWidget_2.setItem(i+1, 0, QtWidgets.QTableWidgetItem(str(x[3][i])))
+            self.tableWidget_2.setItem(i+1, 1, QtWidgets.QTableWidgetItem(str("%.03f"%x[2][i])))
+            self.tableWidget_2.setItem(i+1, 0, QtWidgets.QTableWidgetItem(str("%.03f"%x[3][i])))
 
         for i in range(0,5):
-            self.tableWidget.setItem(i, 1, QtWidgets.QTableWidgetItem(str(x[0][i])))
-            self.tableWidget.setItem(i, 2, QtWidgets.QTableWidgetItem(str(x[1][i])))
-            self.tableWidget.setItem(i, 3, QtWidgets.QTableWidgetItem(str(x[5][i])))
+            self.tableWidget.setItem(i, 1, QtWidgets.QTableWidgetItem(str("%.03f"%x[0][i])))
+            self.tableWidget.setItem(i, 2, QtWidgets.QTableWidgetItem(str("%.03f"%x[1][i])))
+            self.tableWidget.setItem(i, 3, QtWidgets.QTableWidgetItem(str("%.03f"%x[5][i])))
 
             if x[4][i]["mode"] == "time":
                 if x[4][i]["dir"] == 1:

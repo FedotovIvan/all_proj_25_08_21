@@ -106,7 +106,7 @@ class owen:
 
 class flow_meter_class:
     def __init__(self, port = 0, slave_id_modbus = 0, baundrate = 9600, stopbit = 1, bytesize = 8,
-                 timeout = 1, register_flow = 0, register_temp = 0, debug = False, default_valume = 4):
+                 timeout = 1, register_flow = 0, register_temp = 0, debug = False, default_valume = 4,is_no_air=False):
         self.port = port
         self.slave_id_modbus = slave_id_modbus
         self.baundrate = baundrate
@@ -118,6 +118,7 @@ class flow_meter_class:
 
         self.debug = debug
         self.default_valume = default_valume
+        self.is_no_air = is_no_air
 
         if self.debug == False:
             self.instr = minimalmodbus.Instrument(self.port,self.slave_id_modbus,minimalmodbus.MODE_RTU)
@@ -146,14 +147,19 @@ class flow_meter_class:
 
 
     def read_temp_and_flow(self):
-        if self.debug == False:
-            self.flow = self.read_register(self.register_flow)
-            self.temp = self.read_register(self.register_temp)
-        else:
-            self.flow = self.default_valume + randint((-1) * self.default_valume, self.default_valume)/10
-            self.temp = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
+        if self.is_no_air == False:
+            if self.debug == False:
+                self.flow = self.read_register(self.register_flow)
+                self.temp = self.read_register(self.register_temp)
+            else:
+                self.flow = self.default_valume + randint((-1) * self.default_valume, self.default_valume)/10
+                self.temp = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
 
-        return [self.flow, self.temp]
+            return [self.flow, self.temp]
+        else:
+            self.flow = self.read_register(1)
+            self.temp = 0
+            return [self.flow, self.temp]
 
 
 class mx110_read_data:
@@ -421,8 +427,19 @@ if __name__ == '__main__':
         data = T1.read_data()
         print(data)
         time.sleep(1)
-'''
+
     ow = owen("COM11", 1)
     ow.open_q(1, 2000)
     time.sleep(5)
     ow.close_q(3, 2000)
+    '''
+    instr = minimalmodbus.Instrument("COM7",5, minimalmodbus.MODE_RTU)
+    instr.serial.baudrate = 9600  # Baud
+    instr.serial.bytesize = 8
+    instr.serial.stopbits = 1
+    instr.serial.timeout = 1
+    instr.mode = minimalmodbus.MODE_RTU
+    instr.clear_buffers_before_each_transaction = True
+    while 1==1:
+        print(instr.read_float(1,functioncode=4))
+        time.sleep(0.2)
