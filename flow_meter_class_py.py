@@ -136,31 +136,27 @@ class flow_meter_class:
 
     def read_register(self, addr):
         check = 0
-        x = 0
-        while check == 0:
-            check = 1
+        x = -1
+        while check < 5:
             try:
                 x = self.instr.read_float(addr, 4, 2)
             except:
-                check = 0
+                check += 1
         return x
 
 
     def read_temp_and_flow(self):
-        if self.is_no_air == False:
-            if self.debug == False:
+        if self.debug == False:
+            if self.is_no_air == False:
                 self.flow = self.read_register(self.register_flow)
                 self.temp = self.read_register(self.register_temp)
             else:
-                self.flow = self.default_valume + randint((-1) * self.default_valume, self.default_valume)/10
-                self.temp = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
-
-            return [self.flow, self.temp]
+                self.flow = self.read_register(self.register_flow)
+                self.temp = 0
         else:
-            self.flow = self.read_register(1)
-            self.temp = 0
-            return [self.flow, self.temp]
-
+            self.flow = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
+            self.temp = self.default_valume + randint((-1) * self.default_valume, self.default_valume) / 10
+        return [self.flow, self.temp]
 
 class mx110_read_data:
     def __init__(self, port = 0, slave_id_modbus = 0, baundrate = 9600, stopbit = 1, bytesize = 8,
@@ -191,13 +187,12 @@ class mx110_read_data:
 
     def read_register(self, addr):
         check = 0
-        x = 0
-        while check == 0:
-            check = 1
+        x = -1
+        while check < 5:
             try:
                 x = self.instr.read_float(addr, 4, 2)
             except:
-                check = 0
+                check += 1
         return x
 
     def read_data(self):#new function

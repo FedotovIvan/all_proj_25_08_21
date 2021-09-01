@@ -129,6 +129,12 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
+
+        self.stop_butt = QtWidgets.QPushButton(self.groupBox_3)
+        self.stop_butt.setGeometry(QtCore.QRect(30, 140, 91, 21))
+        self.stop_butt.setObjectName("stop_butt")
+        self.stop_butt.setText("СТОП")
+        self.stop_butt.setStyleSheet('QPushButton {background-color: red; color: white}')
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
@@ -140,10 +146,16 @@ class Ui_MainWindow(object):
         self.connect.clicked.connect(self.connect_func)
         self.set_new_q.clicked.connect(self.set_new_q_func)
         self.set_q_to_t.clicked.connect(self.set_new_q_t_func)
+        self.stop_butt.clicked.connect(self.all_stop)
 
 
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def all_stop(self):
+        self.device.set_new_task("time", 1, 0, 4, 1)
+        self.device.set_new_task("time", 1, 0, 4, 2)
+        self.device.set_new_task("time", 1, 0, 4, 3)
 
     def timer_func(self):
         x = self.device.get_all_data_to_ui()

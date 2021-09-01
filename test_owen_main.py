@@ -54,7 +54,7 @@ class driver_hard:
             self._read_all_data_dev()
             self._is_ready_task()
             print("i here")
-            time.sleep(1)
+            time.sleep(0.5)
 
     def _rule_device(self):
         for i in range(1,4):
