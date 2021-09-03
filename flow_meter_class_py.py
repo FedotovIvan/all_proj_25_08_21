@@ -136,12 +136,20 @@ class flow_meter_class:
 
     def read_register(self, addr):
         check = 0
+        ok = 0
         x = -1
         while check < 5:
             try:
-                x = self.instr.read_float(addr, 4, 2)
+                if self.is_no_air == True:
+                    x = self.instr.read_float(addr, 4, 2)
+                else:
+                    x = self.instr.read_float(addr, 4, 2)
+                ok = 1
             except:
                 check += 1
+                ok = 0
+            if ok == 1:
+                return x
         return x
 
 
@@ -187,12 +195,17 @@ class mx110_read_data:
 
     def read_register(self, addr):
         check = 0
+        ok = 0
         x = -1
         while check < 5:
             try:
                 x = self.instr.read_float(addr, 4, 2)
+                ok = 1
             except:
                 check += 1
+                ok = 0
+            if ok == 1:
+                return x
         return x
 
     def read_data(self):#new function
@@ -436,5 +449,5 @@ if __name__ == '__main__':
     instr.mode = minimalmodbus.MODE_RTU
     instr.clear_buffers_before_each_transaction = True
     while 1==1:
-        print(instr.read_float(1,functioncode=4))
+        print(instr.read_float(0,functioncode=4))
         time.sleep(0.2)
