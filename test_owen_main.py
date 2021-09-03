@@ -117,7 +117,8 @@ class driver_hard:
             self.task_q[num_q-1] = {"mode": "time", "time": time, "dir": dir, "q": q}
         if mode == 'q':
             self.task_q[num_q - 1] = {"mode": "q", "time": time, "dir": dir, "q": q}
-
+    def set_new_err(self,num,err):
+        self.error[num-1] = err
 if __name__ == '__main__':
     '''
     ow = owen("COM11",1)
