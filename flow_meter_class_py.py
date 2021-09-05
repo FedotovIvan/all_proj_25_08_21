@@ -441,13 +441,8 @@ if __name__ == '__main__':
     time.sleep(5)
     ow.close_q(3, 2000)
     '''
-    instr = minimalmodbus.Instrument("COM7",5, minimalmodbus.MODE_RTU)
-    instr.serial.baudrate = 9600  # Baud
-    instr.serial.bytesize = 8
-    instr.serial.stopbits = 1
-    instr.serial.timeout = 1
-    instr.mode = minimalmodbus.MODE_RTU
-    instr.clear_buffers_before_each_transaction = True
-    while 1==1:
-        print(instr.read_float(0,functioncode=4))
-        time.sleep(0.2)
+    import time
+
+    timestr = time.strftime("%Y,%m,%d-%H,%M")
+    print("fgf_"+timestr)
+

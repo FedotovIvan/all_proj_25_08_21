@@ -14,6 +14,7 @@ from PyQt5.QtCore import *
 from test_owen_main import driver_hard
 from threading import Thread
 from PyQt5.QtGui import *
+import time
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -175,7 +176,14 @@ class Ui_MainWindow(object):
         self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_3.setObjectName("line_3")
+
+        self.but_save_file = QtWidgets.QPushButton(self.centralwidget)
+        self.but_save_file.setGeometry(QtCore.QRect(50, 50, 70, 30))
+        self.but_save_file.setObjectName("but_save_file")
+        self.but_save_file.setText("сохранить")
+
         MainWindow.setStatusBar(self.statusbar)
+
 
 
         self.retranslateUi(MainWindow)
@@ -189,10 +197,14 @@ class Ui_MainWindow(object):
         self.set_q_to_t.clicked.connect(self.set_new_q_t_func)
         self.stop_butt.clicked.connect(self.all_stop)
         self.save_error.clicked.connect(self.save_new_err)
+        self.but_save_file.clicked.connect(self.save_file)
 
-
+        self.saved = 0
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    def save_file(self):
+        self.saved = 1
+        self.file.close()
 
     def save_new_err(self):
         numq = int(self.device_num.currentText())
@@ -205,7 +217,8 @@ class Ui_MainWindow(object):
 
     def timer_func(self):
         x = self.device.get_all_data_to_ui()
-
+        if self.saved == 0:
+            self.format_file(x)
         for i in range(0,8):
             self.tableWidget_2.setItem(i+1, 1, QtWidgets.QTableWidgetItem(str("%.03f"%x[2][i])))
             self.tableWidget_2.setItem(i+1, 0, QtWidgets.QTableWidgetItem(str("%.03f"%x[3][i])))
@@ -251,7 +264,20 @@ class Ui_MainWindow(object):
 
 
     def format_file(self,x):
-        self.file.write("%q1,%q2,%q3,%q4,%q5,%qt1,%qt2,%qt3,%qt4,%qt5\n"%(x[0][0],x[0][1],x[0][2],x[0][3],x[0][4],x[1][0],x[1][1],x[1][2],x[1][3],x[1][3]))
+        self.file.write("%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,"%
+                        (x[0][0],x[0][1],x[0][2],x[0][3],x[0][4],x[1][0],x[1][1],x[1][2],x[1][3],x[1][3]))
+        self.file.write("%f,%f,%f,%f,%f,%f,%f,%f,"%
+                        (x[2][0],x[2][1],x[2][2],x[2][3],x[2][4],x[2][5],x[2][6],x[2][7]))
+        self.file.write("%f,%f,%f,%f,%f,%f,%f,%f" %
+                        (x[3][0], x[3][1], x[3][2], x[3][3], x[3][4], x[3][5], x[3][6], x[3][7]))
+        for i in range(0,5):
+            self.file.write(str(x[4][i]["mode"])+",")
+            self.file.write(str(x[4][i]["q"])+",")
+            self.file.write(str(x[4][i]["time"])+",")
+            self.file.write(str(x[4][i]["dir"])+",")
+        self.file.write("%f,%f,%f,%f,%f" %
+                        (x[5][0], x[5][1], x[5][2], x[5][3], x[5][4]))
+        self.file.write("\n")
 
 
     def connect_func(self):
@@ -262,7 +288,11 @@ class Ui_MainWindow(object):
             self.tr = Thread(target=self.device.loop_hard)
             self.tr.start()
             self.timer.start(500)
-            self.file = open("data_%data_%time"%(datetime.date,datetime.time),"w")
+            timestr = time.strftime("%Y,%m,%d-%H,%M")
+            self.file = open("data_"+timestr,"w")
+            self.file.write("q1,q2,q3,q4,q5,q_Temp1,q_Temp2,q_Temp3,q_Temp4,q_Temp5,T1,T2,T3,T4,T5,T6,T7,T8,"+
+                            "P1,P2,P3,P4,P5,P6,P7,P8,mode,set_q,set_time,set_dir,"+
+                            "ready_1,ready_2,ready_3,ready_4,ready_5\n")
 
     def set_new_q_func(self):
         text = self.new_q.toPlainText()

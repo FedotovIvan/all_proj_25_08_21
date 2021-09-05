@@ -29,7 +29,7 @@ class driver_hard:
         self.q1 = flow_meter_class("COM7",2,register_flow=167,register_temp=171)
         self.q2 = flow_meter_class("COM7",3,register_flow=167,register_temp=171)
         self.q3 = flow_meter_class("COM7",4,register_flow=167,register_temp=171)
-        self.q4 = flow_meter_class("COM7",5,register_flow=0,register_temp=171,is_no_air= True, debug= False)
+        self.q4 = flow_meter_class("COM7",5,register_flow=0,register_temp=171,is_no_air= True, debug=False)
         self.q5 = flow_meter_class(debug=True)
 
 
@@ -54,7 +54,7 @@ class driver_hard:
             self._read_all_data_dev()
             self._is_ready_task()
             print("i here")
-            time.sleep(0.5)
+            #time.sleep(0.5)
 
     def _rule_device(self):
         for i in range(1,4):
